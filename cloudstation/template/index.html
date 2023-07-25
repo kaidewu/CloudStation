@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Manager - {{ req_path }}</title>
+</head>
+<body>
+    <h1>File Manager</h1>
+    <ul>
+        {% for dir in directories %}
+            <li>
+                <a href="{{ req_path }}/{{ dir }}">{{ dir }}</a>
+            </li>
+        {% endfor %}
+
+        {% for file in files %}
+            <li>
+                <a href="{{ req_path }}/{{ file }}">{{ file }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

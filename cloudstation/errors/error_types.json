@@ -1,0 +1,86 @@
+{
+  "Exception": {
+    "code": 500,
+    "name": "Internal Error"
+  },
+  "StandardError": {
+    "code": 500,
+    "name": "Internal Error"
+  },
+  "ArithmeticError": {
+    "code": 500,
+    "name": "Internal Error"
+  },
+  "ZeroDivisionError": {
+    "code": 500,
+    "name": "Internal Error"
+  },
+  "AssertionError": {
+    "code": 400,
+    "name": "Assertion Error"
+  },
+  "AttributeError": {
+    "code": 400,
+    "name": "Attribute Error"
+  },
+  "UserWarning": {
+    "code": 200,
+    "name": "User Warning"
+  },
+  "DeprecationWarning": {
+    "code": 200,
+    "name": "Deprecation Warning"
+  },
+  "FileNotFoundError": {
+    "code": 404,
+    "name": "File Not Found Error"
+  },
+  "ImportError": {
+    "code": 500,
+    "name": "Internal Error"
+  },
+  "IndexError": {
+    "code": 400,
+    "name": "Index Error"
+  },
+  "KeyError": {
+    "code": 400,
+    "name": "Key Error"
+  },
+  "TypeError": {
+    "code": 400,
+    "name": "Type Error"
+  },
+  "ValueError": {
+    "code": 400,
+    "name": "Value Error"
+  },
+  "SyntaxError": {
+    "code": 400,
+    "name": "Syntax Error"
+  },
+  "IOError": {
+    "code": 500,
+    "name": "Internal Error"
+  },
+  "NotImplementedError": {
+    "code": 500,
+    "name": "Internal Error"
+  },
+  "RuntimeError": {
+    "code": 500,
+    "name": "Internal Error"
+  },
+  "KeyInterrupt": {
+    "code": 500,
+    "name": "Internal Error"
+  },
+  "MemoryError": {
+    "code": 500,
+    "name": "Internal Error"
+  },
+  "OSError": {
+    "code": 500,
+    "name": "Internal Error"
+  }
+}

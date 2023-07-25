@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+requests
+sqlalchemy
+moviepy
+pillow
+starlette
+flask
