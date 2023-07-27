@@ -1,7 +1,7 @@
-import Directory from '../components/Directory'
-import Image from '../components/Image'
-import Video from '../components/Video'
-import Other from '../components/Other'
+import Directory from './Directory'
+import Image from './/Image'
+import Video from './Video'
+import Other from './Other'
 
 type Drive = {
     basepath: string;
