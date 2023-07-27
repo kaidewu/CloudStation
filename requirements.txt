@@ -6,3 +6,4 @@ moviepy
 pillow
 starlette
 flask
+flask_cors
