@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Logs from '@/types/Logs'
 import Loading from '@/components/Loading'
+import Navbar from '@/components/Navbar'
 
 const APIURL = process.env.NEXT_PUBLIC_DRIVE_ENDPOINT + ':' + process.env.NEXT_PUBLIC_DRIVE_ENDPOINT_PORT + '/api/v1/error/log/'
 
@@ -44,14 +45,15 @@ const ErrorLogs = () => {
 
     return (
         <div>
+            <Navbar />
           {loading ? (
             Loading
           ) : error ? (
             errorComponent
           ) : (
-            <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+            <div className="p-20 relative overflow-x-auto shadow-md sm:rounded-lg">
             <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-900 dark:text-gray-400">
                     <tr>
                         <th scope="col" className="px-6 py-3">
                             Error Id

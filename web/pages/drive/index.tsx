@@ -7,7 +7,8 @@ import Loading from '@/components/Loading'
 import Alert404 from '@/components/Alerts/Alert404'
 import Alert500 from '@/components/Alerts/Alert500'
 import Breadcrumbs from '@/components/Breadcrumbs'
-import BackTopButton from '@/components/BackTopButton'
+import Navbar from '@/components/Navbar'
+import Link from 'next/link'
 
 const ServerMediaURL = process.env.NEXT_PUBLIC_SERVER_MEDIA_ENDPOINT + ':' + process.env.NEXT_PUBLIC_SERVER_MEDIA_ENDPOINT_PORT
 const APIURL = process.env.NEXT_PUBLIC_DRIVE_ENDPOINT + ':' + process.env.NEXT_PUBLIC_DRIVE_ENDPOINT_PORT + '/api/v1/drive/'
@@ -59,41 +60,53 @@ const Drive = () => {
 
     // display loading, error and data based on the state
     return (
-        <>
-            <div className="flex items-center py-4 overflow-x-auto whitespace-nowrap">
-                <a onClick={() => callAPI("")} className="text-gray-900 dark:text-gray-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-                    </svg>
-                </a>
-
-                <Breadcrumbs breadcrumbs={breadcrumbs} callAPI={callAPI}/>
-            </div>
-          {loading ? (
-            Loading
-          ) : error ? (
-            errorComponent
-          ) : errordata?.is_error ? (
-            errordata?.status_code !== 500 ? (
-                <Alert404 status_code={errordata.status_code} error_message={errordata.error_message}/>
-              ) : (
-                <Alert500 status_code={errordata.status_code} error_message={errordata.error_message}/>
-              )
-          ) : (
+        <div>
+            {loading ? (
+                /* Loading Page if is True */
+                Loading
+            ) : error ? (
+                /* Error Page if callAPI returns error */
+                errorComponent
+            ) : errordata?.is_error ? (
+                errordata?.status_code !== 500 ? (
+                    <Alert404 status_code={errordata.status_code} error_message={errordata.error_message} error_code={errordata.error_code}/>
+                ) : (
+                    <Alert500 status_code={errordata.status_code} error_message={errordata.error_message} error_code={errordata.error_code}/>
+                )
+            ) : (
                 <>
+                <Navbar/>
+                <div className="p-20">
+                    {/* Breadcrumbs */}
+                    <div className="flex items-center py-4 overflow-x-auto whitespace-nowrap">
+                        <a onClick={() => callAPI("")} className="text-gray-900 dark:text-gray-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                            </svg>
+                        </a>
+
+                        <Breadcrumbs breadcrumbs={breadcrumbs} callAPI={callAPI}/>
+                    </div>
                     {/* Show Directories */}
                     <div className="Directories">
-                        <ul className="h-auto max-w-full rounded-lg">
+                        <div className="container mx-auto px-5 py-2 lg:px-32 lg:pt-12">
+                            <div className="-m-1 flex flex-wrap md:-m-2">
                             {data?.drive.directories.map((diretory, index) => (
-                                <li key={index} className='hover:bg-gray-50 dark:hover:bg-gray-600'>
-                                    <a onClick={() => callAPI(diretory.directory_relative_path)}>{ diretory.directory_name }</a>
-                                </li>
+                                <button 
+                                    key={index} 
+                                    onClick={() => callAPI(diretory.directory_relative_path)} 
+                                    className="flex w-1/3 flex-wrap hover:scale-110 active:scale-100 duration-200 bg-white-200 dark:bg-gray-900">
+                                    <div className="w-full p-1 md:p-2">
+                                        <p className="font-normal text-gray-700 dark:text-gray-400">{ diretory.directory_name }</p>
+                                    </div>
+                                </button>
                             ))}
-                        </ul>
+                            </div>
+                        </div>
                     </div>
                     {/* Show Images */}
                     <div className="Images">
-                        <div className="container mx-auto px-3 py-2 lg:px-32 lg:pt-12">
+                        <div className="container mx-auto px-5 py-2 lg:px-32 lg:pt-12">
                             <div className="-m-1 flex flex-wrap md:-m-2">
                                 {data?.drive.images.map((image, index) => (
                                     <div key={index} className="flex w-1/3 flex-wrap">
@@ -135,10 +148,10 @@ const Drive = () => {
                             ))}
                         </ul>
                     </div>
+                </div>
                 </>
             )}
-            { BackTopButton }
-        </>
+        </div>
       )
 }
 
