@@ -18,12 +18,7 @@ def get_drive(
             raise FileNotFoundError(f"'{content_abspath}' not found")
 
         return {
-            "basepath": content_abspath,
             "is_error": False,
-            "params": {
-                "drive_path": drive_path,
-                "orderby": order_by
-            },
             "drive": get_content(abspath=content_abspath, relpath=drive_path, order_by=order_by)
         }
     except:
@@ -66,11 +61,11 @@ def get_directories(dirs_names: list, abspath: str, relpath: str, order_by: str)
             "directory_name": dir,
             "directory_absolute_path": dir_abspath,
             "directory_relative_path": os.path.join(relpath, dir).replace("\\", "/"),
-            "directory_created_time": time.strftime('%d/%m/%Y %H:%M:%S',
-                                                        time.localtime(os.path.getctime(dir_abspath))),
-            "directory_modified_time": time.strftime('%d/%m/%Y %H:%M:%S',
-                                                         time.localtime(os.path.getmtime(dir_abspath))),
-            "directory_size": get_size(dir_abspath)
+            #"directory_created_time": time.strftime('%d/%m/%Y %H:%M:%S',
+                                                        #time.localtime(os.path.getctime(dir_abspath))),
+            #"directory_modified_time": time.strftime('%d/%m/%Y %H:%M:%S',
+                                                        #time.localtime(os.path.getmtime(dir_abspath))),
+            #"directory_size": get_size(dir_abspath)
         })
 
     return directories
@@ -111,9 +106,9 @@ def get_files(files_names: list, abspath: str, relpath: str, order_by: str):
             f"{format_type.rstrip('s')}_name": file,
             f"{format_type.rstrip('s')}_absolute_path": file_abspath,
             f"{format_type.rstrip('s')}_relative_path": os.path.join(relpath, file).replace("\\", "/"),
-            f"{format_type.rstrip('s')}_created_time": time.strftime('%d/%m/%Y %H:%M:%S', time.localtime(os.path.getctime(file_abspath))),
-            f"{format_type.rstrip('s')}_modified_time": time.strftime('%d/%m/%Y %H:%M:%S', time.localtime(os.path.getmtime(file_abspath))),
-            f"{format_type.rstrip('s')}_size": get_size(file_abspath),
+            #f"{format_type.rstrip('s')}_created_time": time.strftime('%d/%m/%Y %H:%M:%S', time.localtime(os.path.getctime(file_abspath))),
+            #f"{format_type.rstrip('s')}_modified_time": time.strftime('%d/%m/%Y %H:%M:%S', time.localtime(os.path.getmtime(file_abspath))),
+            #f"{format_type.rstrip('s')}_size": get_size(file_abspath),
             f"{format_type.rstrip('s')}_dimensions": {'height': dimensions_file[1], 'width': dimensions_file[0]} if dimensions_file != "" else {}
         })
 

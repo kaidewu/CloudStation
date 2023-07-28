@@ -23,7 +23,7 @@ def get_db():
         db.close()
 
 
-@log.get("/error/log")
+@log.get("/error/log/")
 async def error_log(db: Session = Depends(get_db),
                     ErrorCode: Union[str, None] = Query(default=None, len=19)):
     try:
