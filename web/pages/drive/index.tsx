@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import Drive from '@/types/Drive'
 import Error from '@/types/Error'
-import Image from 'next/image'
-import { Player } from 'video-react'
 import Loading from '@/components/Loading'
 import Alert404 from '@/components/Alerts/Alert404'
 import Alert500 from '@/components/Alerts/Alert500'
 import Breadcrumbs from '@/components/Breadcrumbs'
 import Navbar from '@/components/Navbar'
-import Link from 'next/link'
+import ImagesGallery from '@/components/ImagesGallery'
+import DirectoriesGallery from '@/components/DirectoriesGallery'
+import VideosGallery from '@/components/VideosGallery'
 
 const ServerMediaURL = process.env.NEXT_PUBLIC_SERVER_MEDIA_ENDPOINT + ':' + process.env.NEXT_PUBLIC_SERVER_MEDIA_ENDPOINT_PORT
 const APIURL = process.env.NEXT_PUBLIC_DRIVE_ENDPOINT + ':' + process.env.NEXT_PUBLIC_DRIVE_ENDPOINT_PORT + '/api/v1/drive/'
 let breadcrumbs: string[] = []
 
-const Drive = () => {
+const DrivePage = () => {
     const [data, setData] = useState<Drive | null>(null)
     const [errordata, setErrorData] = useState<Error | null>(null)
     const [loading, setLoading] = useState(false)
@@ -84,59 +84,19 @@ const Drive = () => {
                                 <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
                             </svg>
                         </a>
-
                         <Breadcrumbs breadcrumbs={breadcrumbs} callAPI={callAPI}/>
                     </div>
                     {/* Show Directories */}
                     <div className="Directories">
-                        <div className="container mx-auto px-5 py-2 lg:px-32 lg:pt-12">
-                            <div className="-m-1 flex flex-wrap md:-m-2">
-                            {data?.drive.directories.map((diretory, index) => (
-                                <button 
-                                    key={index} 
-                                    onClick={() => callAPI(diretory.directory_relative_path)} 
-                                    className="flex w-1/3 flex-wrap hover:scale-110 active:scale-100 duration-200 bg-white-200 dark:bg-gray-900">
-                                    <div className="w-full p-1 md:p-2">
-                                        <p className="font-normal text-gray-700 dark:text-gray-400">{ diretory.directory_name }</p>
-                                    </div>
-                                </button>
-                            ))}
-                            </div>
-                        </div>
+                        <DirectoriesGallery data={data} callAPI={callAPI} />
                     </div>
                     {/* Show Images */}
                     <div className="Images">
-                        <div className="container mx-auto px-5 py-2 lg:px-32 lg:pt-12">
-                            <div className="-m-1 flex flex-wrap md:-m-2">
-                                {data?.drive.images.map((image, index) => (
-                                    <div key={index} className="flex w-1/3 flex-wrap">
-                                        <div className="w-full p-1 md:p-2">
-                                            <Image
-                                                className="block h-full w-full rounded-lg object-cover object-center"
-                                                src={`${ServerMediaURL}/${image.image_relative_path}`} 
-                                                alt={image.image_name}
-                                                height={image.image_dimensions.height / 10}
-                                                width={image.image_dimensions.width /10}
-                                            />
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
+                        <ImagesGallery data={data} ServerMediaURL={ServerMediaURL} />
                     </div>
                     {/* Show Videos */}
                     <div className="Videos">
-                        <ul>
-                            {data?.drive.videos.map((video, index) => (
-                                <li key={index} className='hover:bg-gray-50 dark:hover:bg-gray-600'>
-                                    <Player 
-                                        src={`${ServerMediaURL}/${video.video_relative_path}`}
-                                        height={(video.video_dimensions.height) / 10}
-                                        width={(video.video_dimensions.width) / 10}
-                                    />
-                                </li>
-                            ))}
-                        </ul>
+                        <VideosGallery data={data} ServerMediaURL={ServerMediaURL} />
                     </div>
                     {/* Show Others */}
                     <div className="Others">
@@ -155,4 +115,4 @@ const Drive = () => {
       )
 }
 
-export default Drive
+export default DrivePage 

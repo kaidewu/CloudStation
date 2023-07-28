@@ -3,6 +3,7 @@ import re
 import sys
 import traceback
 import time
+import cv2
 from errors.error import Error
 
 
@@ -91,6 +92,7 @@ def get_files(files_names: list, abspath: str, relpath: str, order_by: str):
     for file in files_names:
 
         file_abspath = os.path.join(abspath, file)
+        video_thumbnail = ""
 
         if os.path.splitext(file_abspath)[1].lower() in image_formats:
             format_type = "images"
@@ -98,6 +100,7 @@ def get_files(files_names: list, abspath: str, relpath: str, order_by: str):
         elif os.path.splitext(file_abspath)[1].lower() in video_formats:
             format_type = "videos"
             dimensions_file = get_video_dimensions(file_abspath)
+            video_thumbnail = extract_frame_from_video(file_abspath)
         else:
             format_type = "others"
             dimensions_file = ""
@@ -106,6 +109,7 @@ def get_files(files_names: list, abspath: str, relpath: str, order_by: str):
             f"{format_type.rstrip('s')}_name": file,
             f"{format_type.rstrip('s')}_absolute_path": file_abspath,
             f"{format_type.rstrip('s')}_relative_path": os.path.join(relpath, file).replace("\\", "/"),
+            f"{format_type.rstrip('s')}_thumbnail_path": video_thumbnail if video_thumbnail != "" else {},
             #f"{format_type.rstrip('s')}_created_time": time.strftime('%d/%m/%Y %H:%M:%S', time.localtime(os.path.getctime(file_abspath))),
             #f"{format_type.rstrip('s')}_modified_time": time.strftime('%d/%m/%Y %H:%M:%S', time.localtime(os.path.getmtime(file_abspath))),
             #f"{format_type.rstrip('s')}_size": get_size(file_abspath),
@@ -162,3 +166,41 @@ def get_video_dimensions(video_path):
     width, height = video.size
     video.close()
     return width, height
+
+def extract_frame_from_video(video_path):
+    # Load the video
+    cap = cv2.VideoCapture(video_path)
+
+    # Check if the video was opened successfully
+    if not cap.isOpened():
+        print("Error: Unable to open video.")
+        return
+
+    # Get the frame count and frame rate of the video
+    frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    frame_rate = int(cap.get(cv2.CAP_PROP_FPS))
+
+    # Set the frame number to the middle frame
+    frame_to_extract = frame_count // 2
+
+    # Set the frame number to the middle frame or any specific frame number you want
+    cap.set(cv2.CAP_PROP_POS_FRAMES, frame_to_extract)
+
+    # Read the frame from the video
+    ret, frame = cap.read()
+
+    # Release the video capture object
+    cap.release()
+
+    if not ret:
+        print("Error: Unable to read frame from the video.")
+        return
+
+    # Get the original filename without extension
+    file_name = os.path.splitext(os.path.basename(video_path))[0]
+
+    # Save the extracted frame with the "_thumb" suffix in the same directory as the video
+    output_filename = os.path.join(os.path.dirname(video_path), f"{file_name}_thumb.jpg")
+    cv2.imwrite(output_filename, frame)
+
+    return output_filename

@@ -1,70 +1,70 @@
-import React, { useEffect, useState } from 'react'
-import Logs from '@/types/Logs'
-import Loading from '@/components/Loading'
-import Navbar from '@/components/Navbar'
+import React, { useEffect, useState } from 'react';
+import Logs from '@/types/Logs';
+import Loading from '@/components/Loading';
+import Navbar from '@/components/Navbar';
 
 const APIURL =
   process.env.NEXT_PUBLIC_DRIVE_ENDPOINT +
   ':' +
   process.env.NEXT_PUBLIC_DRIVE_ENDPOINT_PORT +
-  '/api/v1/error/log/'
+  '/api/v1/error/log/';
 
 const ErrorLogs = () => {
-  const [log, setLog] = useState<Logs[] | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [selectedLog, setSelectedLog] = useState<Logs | null>(null)
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [log, setLog] = useState<Logs[] | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [selectedLog, setSelectedLog] = useState<Logs | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   function callAPI(errorCode: string) {
-    setLoading(true)
+    setLoading(true);
 
     fetch(APIURL + errorCode)
       .then(async (res) => {
         // set the data if the response is successful
-        const logs = await res.json()
-        setLog(logs)
+        const logs = await res.json();
+        setLog(logs);
       })
       .catch((e) => {
         // set the error if there's an error like 404, 400, etc
         if (e instanceof Error) {
-          setError(e.message)
+          setError(e.message);
         }
       })
       .finally(() => {
         // set loading to false after everything has completed.
-        setLoading(false)
-      })
+        setLoading(false);
+      });
   }
 
   useEffect(() => {
     // Make the initial API call when the component mounts
-    callAPI('')
-  }, [])
+    callAPI('');
+  }, []);
 
   // display for error component
-  const errorComponent = <div className="text-red-500">Error: {error}</div>
+  const errorComponent = <div className="text-red-500">Error: {error}</div>;
 
   // Function to handle opening the modal and calling the API for selected log
   const handleViewMore = (errorCode: string) => {
-    setIsModalOpen(true)
-    setSelectedLog(null)
+    setIsModalOpen(true);
+    setSelectedLog(null);
 
     // Call the API with the selected errorCode
     fetch(APIURL + errorCode)
       .then(async (res) => {
-        const selectedLogData = await res.json()
-        setSelectedLog(selectedLogData)
+        const selectedLogData = await res.json();
+        setSelectedLog(selectedLogData);
       })
       .catch((e) => {
-        setError(e.message)
-      })
-  }
+        setError(e.message);
+      });
+  };
 
   // Function to close the modal
   const handleCloseModal = () => {
-    setIsModalOpen(false)
-  }
+    setIsModalOpen(false);
+  };
 
   return (
     <div>
@@ -162,7 +162,7 @@ const ErrorLogs = () => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default ErrorLogs
+export default ErrorLogs;

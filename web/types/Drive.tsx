@@ -1,5 +1,5 @@
 import Directory from './Directory'
-import Image from './/Image'
+import Image from './Image'
 import Video from './Video'
 import Other from './Other'
 

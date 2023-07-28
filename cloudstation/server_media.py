@@ -22,6 +22,7 @@ def get_db():
         
 db = next(get_db())
 
+
 @media_server.route("/", defaults={'req_path': ''})
 @media_server.route("/<path:req_path>", methods = ['GET', 'POST'])
 def index(req_path):

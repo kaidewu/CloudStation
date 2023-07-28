@@ -7,3 +7,4 @@ pillow
 starlette
 flask
 flask_cors
+opencv-python
