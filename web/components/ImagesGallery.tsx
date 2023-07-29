@@ -69,8 +69,8 @@ const ImagesGallery = ({ data, ServerMediaURL }) => {
                     objectFit="cover"
                     src={`${ServerMediaURL}/${image.image_relative_path}`}
                     alt={image.image_name}
-                    height={image.image_dimensions.height}
-                    width={image.image_dimensions.width}
+                    height={image.image_dimensions.height / 10}
+                    width={image.image_dimensions.width /10}
                     onLoadingComplete={() => setLoading(false)}
                   />
                 </div>

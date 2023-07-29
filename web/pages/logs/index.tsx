@@ -3,11 +3,7 @@ import Logs from '@/types/Logs'
 import Loading from '@/components/Loading'
 import Navbar from '@/components/Navbar'
 
-const APIURL =
-  process.env.NEXT_PUBLIC_DRIVE_ENDPOINT +
-  ':' +
-  process.env.NEXT_PUBLIC_DRIVE_ENDPOINT_PORT +
-  '/api/v1/error/log/'
+const ErrorLogEnpoint = process.env.NEXT_PUBLIC_CLOUDSTATION_ENDPOINT + ':' + process.env.NEXT_PUBLIC_CLOUDSTATION_ENDPOINT_PORT + '/api/v1/error/log/?ErrorCode='
 
 const ErrorLogs = () => {
   const [log, setLog] = useState<Logs[] | null>(null)
@@ -19,7 +15,7 @@ const ErrorLogs = () => {
   function callAPI(errorCode: string) {
     setLoading(true)
 
-    fetch(APIURL + errorCode)
+    fetch(ErrorLogEnpoint + errorCode)
       .then(async (res) => {
         // set the data if the response is successful
         const logs = await res.json()
@@ -51,9 +47,10 @@ const ErrorLogs = () => {
     setSelectedLog(null)
 
     // Call the API with the selected errorCode
-    fetch(APIURL + errorCode)
+    fetch(ErrorLogEnpoint + errorCode)
       .then(async (res) => {
         const selectedLogData = await res.json()
+        console.log('Selected Log Data:', selectedLogData)
         setSelectedLog(selectedLogData)
       })
       .catch((e) => {
@@ -65,6 +62,22 @@ const ErrorLogs = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false)
   }
+
+  const modalContent = selectedLog && (
+    <div className="bg-white dark:bg-gray-900 p-4 rounded-lg shadow-xl">
+      <h2 className="text-xl font-semibold mb-4">Error Log Details</h2>
+      <p>
+        Error Id: {selectedLog.error_id}
+        <br />
+        Error Code: {selectedLog.error_code}
+        <br />
+        Error Info: {selectedLog.error_traceback}
+        <br />
+        Error Date: {selectedLog.error_date}
+        {/* Add any other relevant log details here */}
+      </p>
+    </div>
+  )
 
   return (
     <div>
@@ -136,20 +149,7 @@ const ErrorLogs = () => {
           {isModalOpen && selectedLog && (
             <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-75">
               <div className="relative z-10 max-w-full overflow-hidden">
-                {/* Display the log details in the modal */}
-                <div className="bg-white dark:bg-gray-900 p-4 rounded-lg shadow-xl">
-                  <h2 className="text-xl font-semibold mb-4">Error Log Details</h2>
-                  <p>
-                    Error Id: {selectedLog.error_id}
-                    <br />
-                    Error Code: {selectedLog.error_code}
-                    <br />
-                    Error Info: {selectedLog.error_traceback}
-                    <br />
-                    Error Date: {selectedLog.error_date}
-                    {/* Add any other relevant log details here */}
-                  </p>
-                </div>
+                {modalContent}
                 <button
                   className="absolute top-0 right-0 m-4 p-2 text-white bg-gray-800 rounded-lg"
                   onClick={handleCloseModal}

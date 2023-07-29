@@ -10,8 +10,8 @@ import ImagesGallery from '@/components/ImagesGallery'
 import DirectoriesGallery from '@/components/DirectoriesGallery'
 import VideosGallery from '@/components/VideosGallery'
 
-const ServerMediaURL = process.env.NEXT_PUBLIC_SERVER_MEDIA_ENDPOINT + ':' + process.env.NEXT_PUBLIC_SERVER_MEDIA_ENDPOINT_PORT
-const APIURL = process.env.NEXT_PUBLIC_DRIVE_ENDPOINT + ':' + process.env.NEXT_PUBLIC_DRIVE_ENDPOINT_PORT + '/api/v1/drive/'
+const ServerMediaURL = process.env.NEXT_PUBLIC_CLOUDSTATION_ENDPOINT + ':' + process.env.NEXT_PUBLIC_CLOUDSTATION_ENDPOINT_PORT + '/media/v1'
+const APIURL = process.env.NEXT_PUBLIC_CLOUDSTATION_ENDPOINT + ':' + process.env.NEXT_PUBLIC_CLOUDSTATION_ENDPOINT_PORT + '/api/v1/drive/'
 let breadcrumbs: string[] = []
 
 const DrivePage = () => {

@@ -28,7 +28,8 @@ async def error_log(db: Session = Depends(get_db),
                     ErrorCode: Union[str, None] = Query(default=None, len=19)):
     try:
         results = []
-        if ErrorCode is None:
+
+        if (ErrorCode is None) or (ErrorCode == "") or (ErrorCode == "\"\""):
             query_error_log = crud.get_all_error_log(db)
         else:
             query_error_log = crud.get_error_log_by_code(db, errl_code=ErrorCode)
