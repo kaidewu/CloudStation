@@ -66,12 +66,12 @@ const ImagesGallery = ({ data, ServerMediaURL }) => {
                       "block h-full w-full rounded-lg object-cover object-center",
                       isLoading ? "grayscale blur-2xl scale-110" : "grayscale-0 blur-0 scale-100"
                     )}
-                    objectFit="cover"
                     src={`${ServerMediaURL}/${image.image_relative_path}`}
                     alt={image.image_name}
-                    height={image.image_dimensions.height / 10}
-                    width={image.image_dimensions.width /10}
+                    height={image.image_dimensions.height / 7}
+                    width={image.image_dimensions.width / 7}
                     onLoadingComplete={() => setLoading(false)}
+                    quality={70}
                   />
                 </div>
               </div>
