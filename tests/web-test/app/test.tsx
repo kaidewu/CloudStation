@@ -27,9 +27,7 @@ const ErrorLogs = () => {
       })
       .catch((e) => {
         // set the error if there's an error like 404, 400, etc
-        if (e instanceof Error) {
-          setError(e.message);
-        }
+        console.log(e)
       })
       .finally(() => {
         // set loading to false after everything has completed.
