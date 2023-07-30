@@ -35,7 +35,6 @@ async def error_log(db: Session = Depends(get_db),
             query_error_log = crud.get_error_log_by_code(db, errl_code=ErrorCode)
 
         for query in query_error_log:
-            print(query.errl_deleted)
             if query.errl_deleted == 0:
                 results.append({
                     "error_id": query.errl_id,
