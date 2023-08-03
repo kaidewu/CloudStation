@@ -11,12 +11,12 @@ import {
 import Layout from '@/components/layouts/article'
 import Alerts from '@/components/Alerts'
 import Alert500 from '@/components/Alert500'
-import Loading from '@/components/loading'
 import Drive from '@/lib/types/Drive'
 import Error from '@/lib/types/Error'
 import Directories from '@/components/Drive/directories'
 import Breadcrumbs from '@/components/Drive/breadcrumbs'
 import ImagesGallery from '@/components/Drive/imageGallery'
+import VideosGallery from '@/components/Drive/videoGallery'
 
 const ServerMediaURL = process.env.NEXT_PUBLIC_CLOUDSTATION_ENDPOINT + ':' + process.env.NEXT_PUBLIC_CLOUDSTATION_ENDPOINT_PORT + '/media/v1'
 const APIURL = process.env.NEXT_PUBLIC_CLOUDSTATION_ENDPOINT + ':' + process.env.NEXT_PUBLIC_CLOUDSTATION_ENDPOINT_PORT + '/api/v1/drive/'
@@ -88,6 +88,9 @@ const Drive = () => {
                         </Box>
                         <Box>
                             <ImagesGallery images={data?.drive.images} ServerMediaURL={ServerMediaURL}/>
+                        </Box>
+                        <Box>
+                            <VideosGallery videos={data?.drive.videos} ServerMediaURL={ServerMediaURL}/>
                         </Box>
                     </>
                         
