@@ -4,6 +4,8 @@ from fastapi import File, UploadFile
 import platform
 import sys
 import traceback
+import os
+import shutil
 from sqlalchemy.orm import Session
 from db import crud, models
 from db.database import SessionLocal, engine
@@ -57,5 +59,11 @@ async def upload_drive(
     ] = [],
 ):
     if files != []:
+        for file in files:
+            file_path = os.path.join(drive_path, file.filename)
+            if not os.path.isdir(drive_path):
+                os.makedirs(drive_path)
+            with open(file_path, 'wb+') as f:
+                shutil.copyfileobj(file.file, f)
         return {"filenames": [file.filename for file in files], "Relative Path": drive_path}
     return {"message": "File empty"}
