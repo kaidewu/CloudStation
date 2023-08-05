@@ -1,4 +1,6 @@
 from fastapi import APIRouter, Query, Depends
+from typing import Annotated
+from fastapi import File, UploadFile
 import platform
 import sys
 import traceback
@@ -11,7 +13,7 @@ from errors.error import Error
 
 models.Base.metadata.create_all(bind=engine)
 
-drive_router = drive = APIRouter()
+drive_router = APIRouter()
 
 
 # Dependency
@@ -23,7 +25,7 @@ def get_db():
         db.close()
 
 
-@drive.get("/drive/{drive_path:path}")
+@drive_router.get("/drive/{drive_path:path}")
 async def drive(
         drive_path: str = "",
         orderby: str = Query(default=None, max_length=4),
@@ -46,3 +48,14 @@ async def drive(
             error_body="cloudstation.api.api_v1.routers.drive.drive -> drive()",
             error_traceback=traceback.format_exc()
         ).error()
+
+@drive_router.post("/drive/{drive_path:path}")
+async def upload_drive(
+    drive_path: str = "",
+    files: Annotated[
+        list[UploadFile], File(description="Multiple files as UploadFile")
+    ] = [],
+):
+    if files != []:
+        return {"filenames": [file.filename for file in files], "Relative Path": drive_path}
+    return {"message": "File empty"}

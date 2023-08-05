@@ -1,4 +1,5 @@
 type Logs = {
+    is_error: boolean
     error_id: number
     error_code: string
     error_traceback: string

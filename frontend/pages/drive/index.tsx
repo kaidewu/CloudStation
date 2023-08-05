@@ -1,12 +1,10 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState,useCallback } from 'react'
 import {
-  Link,
-  Container,
-  Heading,
   Box,
-  Button,
   Spinner,
-  Flex
+  Flex,
+  useDisclosure,
+  Button
 } from '@chakra-ui/react'
 import Layout from '@/components/layouts/article'
 import Alerts from '@/components/Alerts'
@@ -17,6 +15,7 @@ import Directories from '@/components/Drive/directories'
 import Breadcrumbs from '@/components/Drive/breadcrumbs'
 import ImagesGallery from '@/components/Drive/imageGallery'
 import VideosGallery from '@/components/Drive/videoGallery'
+import ModalUpload from '@/components/Drive/modalUpload'
 
 const ServerMediaURL = process.env.NEXT_PUBLIC_CLOUDSTATION_ENDPOINT + ':' + process.env.NEXT_PUBLIC_CLOUDSTATION_ENDPOINT_PORT + '/media/v1'
 const APIURL = process.env.NEXT_PUBLIC_CLOUDSTATION_ENDPOINT + ':' + process.env.NEXT_PUBLIC_CLOUDSTATION_ENDPOINT_PORT + '/api/v1/drive/'
@@ -24,6 +23,9 @@ let breadcrumbs: string[] = []
 
 const Drive = () => {
 
+    const { isOpen, onOpen, onClose } = useDisclosure()
+    const initialRef = React.useRef(null)
+    const finalRef = React.useRef(null)
     const [data, setData] = useState<Drive | null>(null)
     const [errordata, setErrorData] = useState<Error | null>(null)
     const [loading, setLoading] = useState(false)

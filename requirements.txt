@@ -5,6 +5,5 @@ sqlalchemy
 moviepy
 pillow
 starlette
-flask
-flask_cors
 opencv-python
+python-multipart

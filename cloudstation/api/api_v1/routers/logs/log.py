@@ -37,6 +37,7 @@ async def error_log(db: Session = Depends(get_db),
         for query in query_error_log:
             if query.errl_deleted == 0:
                 results.append({
+                    "is_error": False,
                     "error_id": query.errl_id,
                     "error_code": query.errl_code,
                     "error_traceback": query.errl_traceback,
