@@ -81,21 +81,26 @@ const Drive = () => {
                         <Alert500 status_code={errordata?.status_code} error_code={errordata?.error_code}/>
                     )
                 ) : (
-                    <>
+                    <Box>
                         <Box p={5}>
                             <Breadcrumbs breadcrumbItems={breadcrumbs} callAPI={callAPI}/>
                         </Box>
-                        <Box>
-                            <Directories directories={data?.drive.directories} callAPI={callAPI}/>
-                        </Box>
-                        <Box>
-                            <ImagesGallery images={data?.drive.images} ServerMediaURL={ServerMediaURL}/>
-                        </Box>
-                        <Box>
-                            <VideosGallery videos={data?.drive.videos} ServerMediaURL={ServerMediaURL}/>
-                        </Box>
-                    </>
-                        
+                        {data?.drive.directories.length !== 0 ? (
+                            <Box>
+                                <Directories directories={data?.drive.directories} callAPI={callAPI}/>
+                            </Box>
+                        ): null}
+                        {data?.drive.images.length !== 0 ? (
+                            <Box>
+                                <ImagesGallery images={data?.drive.images} ServerMediaURL={ServerMediaURL}/>
+                            </Box>
+                        ): null}
+                        {data?.drive.videos.length !== 0 ? (
+                            <Box>
+                                <VideosGallery videos={data?.drive.videos} ServerMediaURL={ServerMediaURL}/>
+                            </Box>
+                        ): null}
+                    </Box>
                 )}
             </Layout>
         </>

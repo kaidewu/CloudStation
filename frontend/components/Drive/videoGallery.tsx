@@ -43,7 +43,7 @@ const VideosGallery = ({ videos, ServerMediaURL }) => {
   }
   
   return (
-    <Box>
+    <div className="d-flex justify-content-center">
       <div className="photo-gallery">
         {/* Loop through rows */}
         {rows.map((row, rowIndex) => (
@@ -53,7 +53,7 @@ const VideosGallery = ({ videos, ServerMediaURL }) => {
                 return null
               }
               return(
-                <div key={index} className="col-sm-6 col-md-4 col-lg-3 item" onClick={() => openLightbox(index)}>
+                <div key={index} className="col-2 item" onClick={() => openLightbox(index)}>
                   <video
                   controls
                   poster={
@@ -80,7 +80,7 @@ const VideosGallery = ({ videos, ServerMediaURL }) => {
           onMoveNextRequest={nextVideo}
         />
       )}
-    </Box>
+    </div>
   )
 }
 

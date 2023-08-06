@@ -13,6 +13,7 @@ import ModalUpload from './modalUpload'
 
 const Breadcrumbs = ({breadcrumbItems, callAPI}) => {
     const [currentPath, setCurrentPath] = useState("")
+    let path_drive: string = ""
     const { isOpen, onOpen, onClose } = useDisclosure()
     const initialRef = React.useRef(null)
     const finalRef = React.useRef(null)
@@ -45,6 +46,8 @@ const Breadcrumbs = ({breadcrumbItems, callAPI}) => {
                         </BreadcrumbItem>
                     {breadcrumbItems.map((item, index) => {
                         const path = breadcrumbItems.slice(0, index + 1).join('/')
+                        path_drive = path
+
                         return (
                             currentPath === path ? (
                                 <BreadcrumbItem key={index} isCurrentPage>
@@ -61,7 +64,7 @@ const Breadcrumbs = ({breadcrumbItems, callAPI}) => {
                 </Stack>
                 <Box flex={1} alignItems="right">
                     <Button onClick={onOpen}>Open Modal</Button>
-                    <ModalUpload initialRef={initialRef} finalRef={finalRef} isOpen={isOpen} onClose={onClose} callAPI={callAPI} currentPath={breadcrumbItems.slice(-1)[0]}/>
+                    <ModalUpload initialRef={initialRef} finalRef={finalRef} isOpen={isOpen} onClose={onClose} callAPI={callAPI} relativePath={path_drive}/>
                 </Box>
             </Container>
         </Box>
