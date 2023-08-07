@@ -19,6 +19,10 @@ def save_files(
                 os.makedirs(os.path.join(basepath, path))
             with open(file_path, 'wb+') as f:
                 shutil.copyfileobj(file.file, f)
+        return {
+            "is_error": False,
+            "message": f"Files {', '.join(file.filename for file in files_exists)} name already exists in the {path}" if len(files_exists) > 0 else "Successful"
+        }
     except:
         return Error(
             error_info=sys.exc_info(),
@@ -26,7 +30,3 @@ def save_files(
             error_body="cloudstation.api.api_v1.routers.drive.save_files -> save_files()",
             error_traceback=traceback.format_exc()
         ).error()
-    finally:
-        return {
-            "message": f"Files {', '.join(file.filename for file in files_exists)} name already exists in the {path}" if len(files_exists) > 0 else "Successful"
-        }
