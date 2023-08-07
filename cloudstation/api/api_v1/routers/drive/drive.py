@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Query, Depends
+from fastapi import APIRouter, Query, Depends, HTTPException
 from typing import Annotated
 from fastapi import File, UploadFile
 import platform
@@ -43,7 +43,13 @@ async def drive(
 ):
     try:    
         basepath = crud.get_csva_default_values(db, csva_name=get_platform())
-        return get_drive(drive_path=drive_path, order_by=orderby, basepath=basepath[0])
+
+        print(basepath)
+
+        if basepath["is_error"]:
+            raise HTTPException(500, basepath["message"])
+        
+        return get_drive(drive_path=drive_path, order_by=orderby, basepath=basepath["message"][0])
     except:
         return Error(
             error_info=sys.exc_info(),
@@ -62,8 +68,12 @@ async def upload_drive(
 ):
     try:
         basepath = crud.get_csva_default_values(db, csva_name=get_platform())
+
+        if basepath["is_error"]:
+            raise HTTPException(500, basepath["message"])
+        
         if files != []:
-            return save_files(files, basepath[0], drive_path)
+            return save_files(files, basepath["message"][0], drive_path)
         return {"message": "File empty"}
     except:
         return Error(
