@@ -1,5 +1,5 @@
 from errors.error import Error
-from fastapi import APIRouter, Query, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from db import crud, models
@@ -36,7 +36,10 @@ async def media(
         
         basepath = crud.get_csva_default_values(db, csva_name=basepath_csva_name)
 
-        return FileResponse(os.path.join(basepath[0], relative_path))
+        if basepath["is_error"]:
+            raise HTTPException(500, basepath["message"])
+
+        return FileResponse(os.path.join(basepath["message"][0], relative_path))
     except:
         return Error(
             error_info=sys.exc_info(),
