@@ -8,3 +8,5 @@ node_module/
 *..code-workspace/
 .env*
 .env*.development
+frontend/.env.development
+*.development

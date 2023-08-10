@@ -1,7 +1,7 @@
-from sqlalchemy import Boolean, Integer, String, Column, Null
+from sqlalchemy import Integer, String, Column, Null
+from sqlalchemy.ext.declarative import declarative_base
 
-from db.database import Base
-
+Base = declarative_base()
 
 class SystemVariables(Base):
     __tablename__ = "CONF_SYSTEM_VARIABLES"

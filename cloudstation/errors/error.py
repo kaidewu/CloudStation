@@ -11,7 +11,7 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 
-def generate_unique_code(length=8, segments=4, segment_length=6, delimiter='-'):
+def generate_unique_code(segments=4, segment_length=6, delimiter='-'):
     code = []
     for _ in range(segments):
         segment = ''.join(random.choices(string.ascii_letters + string.digits, k=segment_length))

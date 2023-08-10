@@ -4,6 +4,15 @@ import shutil
 import sys
 import traceback
 
+# Insert errors into ERRROR_ERROR_LOGS and get JSON of errors
+def insert_errorlogs(function: str):
+    return Error(
+            error_info=sys.exc_info(),
+            filename=__file__,
+            error_body=f"cloudstation.api.api_v1.routers.drive.save_files -> {function}()",
+            error_traceback=traceback.format_exc()
+        ).error()
+
 def save_files(
         files: list,
         basepath: str,
@@ -24,9 +33,4 @@ def save_files(
             "message": f"Files {', '.join(file.filename for file in files_exists)} name already exists in the {path}" if len(files_exists) > 0 else "Successful"
         }
     except:
-        return Error(
-            error_info=sys.exc_info(),
-            filename=__file__,
-            error_body="cloudstation.api.api_v1.routers.drive.save_files -> save_files()",
-            error_traceback=traceback.format_exc()
-        ).error()
+        return insert_errorlogs("save_files")
