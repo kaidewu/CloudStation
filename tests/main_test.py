@@ -1,5 +1,11 @@
-import sys
-import os
-import platform
+from typing import Any
 
-print(platform.system())
+
+class Error:
+    def __init__(self) -> None:
+        pass
+
+    def __call__(self, *args: Any, **kwds: Any) -> Any:
+        print("hello")
+
+print(Error())
