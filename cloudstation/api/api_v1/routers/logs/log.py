@@ -74,7 +74,7 @@ async def error_log(db: Session = Depends(get_db),
     except:
         return insert_errorlogs("error_log")
     
-@log_router.post("/error/log/remove")
+@log_router.put("/error/log/remove")
 async def remove_log(
     errors_code: ErrorCodeRequest,
     db: Session = Depends(get_db),

@@ -106,15 +106,16 @@ def settings_drive(
     except:
         return insert_errorlogs("settings_drive")
     
-@drive_router.post("/settings/drive")
+@drive_router.put("/settings/drive")
 def update_settings_drive(
     insert_basepath: BasepathRequest,
     db: Session = Depends(get_db)
 ):
-    try:    
-        basepath = crud.get_csva_default_values(db, csva_name=get_platform())
+    try:
 
         basepath_request = insert_basepath.basepath
+
+        basepath = crud.get_csva_default_values(db, csva_name=get_platform())
 
         if basepath["is_error"]:
             raise SystemError(basepath["message"])
@@ -124,7 +125,7 @@ def update_settings_drive(
 
             if insert_query["is_error"]:
                 raise SystemError(insert_query["message"])
-        
+
         results = crud.update_csva_default_values(db, basepath_request, get_platform())
 
         if results["is_error"]:

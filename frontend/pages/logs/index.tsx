@@ -31,8 +31,6 @@ const Logs = () => {
   function callAPI(errorCode: string) {
     setLoading(true)
 
-    console.log(ErrorLogEndpoint + errorCode)
-
     fetch(ErrorLogEndpoint + errorCode)
         .then(async (res) => {
             // set the data if the response is successful
