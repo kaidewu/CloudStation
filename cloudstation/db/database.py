@@ -10,7 +10,9 @@ if os.path.exists(f"{os.path.abspath(os.path.dirname(__file__))}/cloudy.db") == 
 SQLALCHEMY_DATABASE_URL = f"sqlite:///{os.path.abspath(os.path.dirname(__file__))}/cloudy.db"
 
 engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
+    SQLALCHEMY_DATABASE_URL, 
+    connect_args={"check_same_thread": False},
+    pool_pre_ping=True
 )
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

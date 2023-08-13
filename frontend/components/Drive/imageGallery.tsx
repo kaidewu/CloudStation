@@ -61,7 +61,8 @@ const ImagesGallery = ({ images, ServerMediaURL }) => {
                   src={`${ServerMediaURL}/${image.image_relative_path}`}
                   alt={image?.image_name}
                   height={256}
-                  width={256}/>
+                  width={256}
+                  quality={60}/>
                 </div>
               )
             })}

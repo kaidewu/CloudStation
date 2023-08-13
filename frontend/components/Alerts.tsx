@@ -1,19 +1,65 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react'
+import { Alert, AlertIcon, AlertTitle, AlertDescription, CloseButton, Box, useDisclosure } from '@chakra-ui/react'
 
-const Alerts = ({status_code, error_message, error_code}) =>{
+const Alerts = ({errordata}) =>{
+    const [visible, setVisible] = useState(true)
+
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+          setVisible(false)
+        }, 8000);
+    
+        return () => clearTimeout(timeout)
+      }, [])
+    
+      if (!visible) {
+        return null
+      }
+
     return(
-        <React.Fragment>
-            <div className="bg-teal-100 border-t-4 border-teal-500 rounded-b text-teal-900 px-4 py-3 shadow-md" role="alert">
-                <div className="flex">
-                    <div className="py-1"><svg className="fill-current h-6 w-6 text-teal-500 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z"/></svg></div>
-                    <div>
-                        <p className="font-bold">Error {status_code}</p>
-                        <p className="text-sm">{error_code}</p>
-                        <p className="text-sm">{error_message}</p>
-                    </div>
-                </div>
-            </div>
-        </React.Fragment>
+        <>
+            {errordata?.status_code !== 500 ? (
+                <Alert 
+                status="warning" 
+                style={{
+                    position: 'fixed',
+                    top: '4px',
+                    right: '4px',
+                    width: '450px',
+                    height: '100px',
+                    zIndex: 9999,
+                    borderRadius: '8px',
+                  }}>
+                    <AlertIcon />
+                    <Box>
+                        <AlertTitle>Error {errordata?.status_code}</AlertTitle>
+                        <AlertDescription>
+                            {errordata?.error_message}
+                        </AlertDescription>
+                    </Box>
+                </Alert>
+                ) : (
+                    <Alert 
+                    status="error" 
+                    style={{
+                        position: 'fixed',
+                        top: '4px',
+                        right: '4px',
+                        width: '500px',
+                        height: '100px',
+                        zIndex: 9999,
+                        borderRadius: '8px',
+                      }}>
+                        <AlertIcon />
+                        <Box>
+                            <AlertTitle>Error 500 - Internal Error</AlertTitle>
+                            <AlertDescription>
+                                {errordata?.error_code}
+                            </AlertDescription>
+                        </Box>
+                    </Alert>
+                )}
+        </>
     )
 }
 
