@@ -1,12 +1,23 @@
+# FastAPI Modules
 from fastapi import APIRouter, Query, Depends
 from typing import Annotated
 from fastapi import File, UploadFile
+
+# General Module
 import platform
 import sys
 import traceback
+import os
+
+# Database Modules
+import sqlalchemy
 from sqlalchemy.orm import Session
-from db import crud, models
+from db import models
 from db.database import SessionLocal, engine
+from sqlalchemy import and_
+from sqlalchemy import exc
+
+# Application Modules 
 from api.api_v1.routers.drive.save_files import save_files
 from api.api_v1.routers.drive.settings import get_settings
 from api.api_v1.routers.drive.get_drive import get_drive
@@ -26,12 +37,15 @@ def get_db():
         db.close()
 
 # Insert errors into ERRROR_ERROR_LOGS and get JSON of errors
-def insert_errorlogs(function: str):
+def insert_errorlogs(
+    error_header: str = None, 
+    function: str = "",
+    error_body: str = None):
     return Error(
-            error_info=sys.exc_info(),
+            error_info=sys.exc_info()[0].__name__ if error_header is None else error_header,
             filename=__file__,
             error_body=f"cloudstation.api.api_v1.routers.drive.drive -> {function}()",
-            error_traceback=traceback.format_exc()
+            error_traceback=traceback.format_exc() if error_body is None else error_body
         ).error()
 
 # Get the OS of the machine
@@ -51,15 +65,19 @@ async def drive(
         db: Session = Depends(get_db)
 ):
     try:    
-        basepath = crud.get_csva_default_values(db, csva_name=get_platform())
+        basepath = db.query(models.SystemVariables.csva_default_values).filter(and_(models.SystemVariables.csva_deleted == 0, models.SystemVariables.csva_name == get_platform())).first()
 
-        if basepath["is_error"]:
-            raise SystemError(basepath["message"])
+        if basepath is None:
+            return insert_errorlogs(
+                "FileNotFoundError",
+                "drive", 
+                f"The Path is not defined. Please go to the settings to fill the Path"
+                )
         
-        if basepath["message"] is None:
-            raise SystemError(f"The Path is not defined. Please go to the settings to fill the Path")
-        
-        return get_drive(drive_path=drive_path, order_by=orderby, basepath=basepath["message"][0])
+        return get_drive(drive_path=drive_path, order_by=orderby, basepath=basepath[0])
+    
+    except exc.SQLAlchemyError as sql_error:
+        return insert_errorlogs("drive", f"SQL Error: {sql_error}")
     except:
         return insert_errorlogs("drive")
 
@@ -72,20 +90,30 @@ async def upload_drive(
     db: Session = Depends(get_db)
 ):
     try:
-        basepath = crud.get_csva_default_values(db, csva_name=get_platform())
+        basepath = db.query(models.SystemVariables.csva_default_values).filter(and_(models.SystemVariables.csva_deleted == 0, models.SystemVariables.csva_name == get_platform())).first()
 
-        if basepath["is_error"]:
-            raise SystemError(basepath["message"])
+        if basepath is None:
+            return insert_errorlogs(
+                "FileNotFoundError",
+                "upload_drive", 
+                f"The Path is not defined. Please go to the settings to fill the Path"
+                )
         
-        if basepath["message"] is None:
-            raise SystemError(f"The Path is not defined. Please go to the settings to fill the Path")
-        
-        if files != []:
-            return save_files(files, basepath["message"][0], drive_path)
-        return {
-            "is_error": True,
-            "message": "File empty"
-            }
+        if files == []:
+            return insert_errorlogs(
+                "Exception",
+                "upload_drive",
+                "Files can't be empty"
+                )
+            
+        return save_files(files, basepath[0], drive_path)
+
+    except exc.SQLAlchemyError as sql_error:
+        return insert_errorlogs(
+            "Exception",
+            "upload_drive", 
+            f"SQL Error: {sql_error}"
+            )
     except:
         return insert_errorlogs("upload_drive")
 
@@ -94,15 +122,23 @@ def settings_drive(
     db: Session = Depends(get_db)
 ):
     try:    
-        basepath = crud.get_csva_default_values(db, csva_name=get_platform())
+        basepath = db.query(models.SystemVariables.csva_default_values).filter(and_(models.SystemVariables.csva_deleted == 0, models.SystemVariables.csva_name == get_platform())).first()
 
-        if basepath["is_error"]:
-            raise SystemError(basepath["message"])
+        if basepath is None:
+            return insert_errorlogs(
+                "FileNotFoundError",
+                "upload_drive", 
+                f"The Path is not defined. Please go to the settings to fill the Path"
+                )
         
-        if basepath["message"] is None:
-            raise SystemError(f"The Path is not defined. Please go to the settings to fill the Path")
-        
-        return get_settings(basepath["message"][0])
+        return get_settings(basepath[0])
+
+    except exc.SQLAlchemyError as sql_error:
+        return insert_errorlogs(
+            "Exception",
+            "settings_drive",
+            f"SQL Error: {sql_error}"
+            )
     except:
         return insert_errorlogs("settings_drive")
     
@@ -115,22 +151,57 @@ def update_settings_drive(
 
         basepath_request = insert_basepath.basepath
 
-        basepath = crud.get_csva_default_values(db, csva_name=get_platform())
+        if (basepath_request == "") or (basepath_request is None):
+            return insert_errorlogs(
+                "ValueError",
+                "update_settings_drive",
+                "The Path can't be empty"
+            )
 
-        if basepath["is_error"]:
-            raise SystemError(basepath["message"])
-        
-        if basepath["message"] is None:
-            insert_query = crud.insert_csva_default_values(db, basepath_request, get_platform())
+        basepath = db.query(models.SystemVariables.csva_default_values).filter(and_(models.SystemVariables.csva_deleted == 0, models.SystemVariables.csva_name == get_platform())).first()
 
-            if insert_query["is_error"]:
-                raise SystemError(insert_query["message"])
+        if basepath is None:
 
-        results = crud.update_csva_default_values(db, basepath_request, get_platform())
+            db.add(models.SystemVariables(
+                csva_name=get_platform(),
+                csva_default_values = basepath_request,
+                csva_description_es="Ruta donde se guarda la carpeta personal",
+                csva_description_en="Path where is storage the personal folder",
+                csva_deleted=0,
+                csva_deleted_date=sqlalchemy.sql.null()
+            ))
+            db.commit()
 
-        if results["is_error"]:
-            raise SystemError(results["message"])
+        elif basepath is not None:
+            if not os.path.exists(basepath_request):
+                return insert_errorlogs(
+                    "FileNotFoundError",
+                    "update_settings_drive", 
+                    f"The path {basepath_request} not exists in your device. Please check if the path existing"
+                    )
+            else:
+                db.query(models.SystemVariables).filter(models.SystemVariables.csva_name==get_platform()).update({
+                    "csva_default_values": basepath_request
+                })
+                db.commit()
 
-        return results
+        else:
+            return insert_errorlogs(
+                "Exception",
+                "update_settings_drive", 
+                f"Something happend in the table CONF_SYSTEM_VARIABLES. Please contanct to the administrator"
+                )
+
+        return {
+            "is_error": False,
+            "message": f"The path {basepath_request} has been changed successfully"
+        }
+
+    except exc.SQLAlchemyError as sql_error:
+        return insert_errorlogs(
+            "Exception",
+            "update_settings_drive", 
+            f"SQL Error: {sql_error}"
+            )
     except:
-        return insert_errorlogs("settings_drive")
+        return insert_errorlogs("update_settings_drive")

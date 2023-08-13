@@ -14,12 +14,11 @@ import {
   AccordionPanel,
   AccordionIcon,
 } from '@chakra-ui/react'
-import { DeleteIcon, ViewIcon } from '@chakra-ui/icons'
+import { DeleteIcon } from '@chakra-ui/icons'
 import Layout from '@/components/layouts/article'
 import Logs from '@/lib/types/Logs'
 import Error from '@/lib/types/Error'
 import Alerts from '@/components/Alerts'
-import Alert500 from '@/components/Alert500'
 
 const ErrorLogEndpoint = process.env.NEXT_PUBLIC_CLOUDSTATION_ENDPOINT + ':' + process.env.NEXT_PUBLIC_CLOUDSTATION_ENDPOINT_PORT + '/api/v1/error/log/?ErrorCode='
 
@@ -58,6 +57,37 @@ const Logs = () => {
       callAPI("")
   }, [])
 
+  const removeErrorCode = async (errorCode: string) => {
+
+    const bodyRemoveErrorCode = {
+      "error_code": [errorCode]
+    }
+
+    try{
+      const response = await fetch(`${process.env.NEXT_PUBLIC_CLOUDSTATION_ENDPOINT}:${process.env.NEXT_PUBLIC_CLOUDSTATION_ENDPOINT_PORT}/api/v1/error/log/remove`, {
+        method: 'PUT',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bodyRemoveErrorCode, null, 2)
+      })
+
+      if (!response.ok) {
+        throw new Error('Error')
+      }
+
+      // Implement your file upload logic here
+      console.log(response.json())
+    }
+    catch(error) {
+      console.error(error)
+    }
+    finally{
+      callAPI("")
+    }
+  }
+
   return (
     <Layout title={"Logs"}>
       {loading ? (
@@ -69,11 +99,7 @@ const Logs = () => {
           <Spinner size="xl"/>
         </Flex>
         ) : errorlog?.is_error ? (
-            errordata?.status_code !== 500 ? (
-                <Alerts status_code={errordata?.status_code} error_message={errordata?.error_message} error_code={errordata?.error_code}/>
-            ) : (
-                <Alert500 status_code={errordata?.status_code} error_code={errordata?.error_code}/>
-            )
+            <Alerts errordata={errordata}/>
         ) : (
             <>
               <Box p={10}>
@@ -88,7 +114,10 @@ const Logs = () => {
                               </Box>
                               <AccordionIcon />
                             </AccordionButton>
-                            <Button>
+                            <Button
+                            onClick={() => (
+                              removeErrorCode(log?.error_code)
+                            )}>
                               <DeleteIcon />
                             </Button>
                           </Heading>

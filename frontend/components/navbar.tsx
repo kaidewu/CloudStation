@@ -78,6 +78,9 @@ const Navbar = props => {
           <LinkItem href="/logs" path={path}>
             Logs
           </LinkItem>
+          <LinkItem href="/settings" path={path}>
+            Settings
+          </LinkItem>
           <LinkItem
             href="https://github.com/kaidewu/cloudStation"
             path={path}
@@ -111,6 +114,9 @@ const Navbar = props => {
                 </MenuItem>
                 <MenuItem as={Link} href="/logs">
                   Logs
+                </MenuItem>
+                <MenuItem as={Link} href="/settings">
+                  Settings
                 </MenuItem>
                 <MenuItem
                   as={Link}

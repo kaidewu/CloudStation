@@ -11,7 +11,7 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 
-def generate_unique_code(segments=4, segment_length=6, delimiter='-'):
+def generate_unique_code(segments=6, segment_length=6, delimiter='-'):
     code = []
     for _ in range(segments):
         segment = ''.join(random.choices(string.ascii_letters + string.digits, k=segment_length))
@@ -26,15 +26,13 @@ class Error:
             filename: str, 
             error_body: str, 
             error_traceback: str,
-            error_return: bool = True
         ):
-        self.error_title = error_info[0].__name__
-        self.error_message = str(error_info[1])
+        self.error_title = error_info
+        self.error_message = str(error_info[1]) if not error_info[1] else error_traceback
         self.error_code = generate_unique_code()
         self.filename = filename
         self.error_body = error_body
         self.error_traceback = error_traceback.replace("'", "\"")
-        self.error_return = error_return
 
     def error(self):
         error_log_insert = models.ErrorLogs(
@@ -48,13 +46,12 @@ class Error:
         session.commit()
         session.refresh(error_log_insert)
 
-        if self.error_return:
-            return {
-                "is_error": True,
-                "error_code": self.error_code,
-                "status_code": self.get_status_code(),
-                "error_message": self.error_message,
-            }
+        return {
+            "is_error": True,
+            "error_code": self.error_code,
+            "status_code": self.get_status_code(),
+            "error_message": self.error_message,
+        }
 
     def get_status_code(self):
         with open(f"{os.path.dirname(__file__)}/error_types.json", "r") as errors:
