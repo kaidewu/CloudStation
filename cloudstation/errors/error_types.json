@@ -35,6 +35,10 @@
     "code": 404,
     "name": "File Not Found Error"
   },
+  "FileAlreadyExists": {
+    "code": 404,
+    "name": "File Already Exists"
+  },
   "ImportError": {
     "code": 500,
     "name": "Internal Error"
@@ -80,6 +84,10 @@
     "name": "Internal Error"
   },
   "OSError": {
+    "code": 500,
+    "name": "Internal Error"
+  },
+  "SQLError" :{
     "code": 500,
     "name": "Internal Error"
   }

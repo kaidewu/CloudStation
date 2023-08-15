@@ -74,19 +74,19 @@ const Drive = () => {
                     <Box p={5}>
                         <Breadcrumbs breadcrumbItems={breadcrumbs} callAPI={callAPI}/>
                     </Box>
-                    {data?.drive.directories.length !== 0 ? (
+                    {data?.directories.length !== 0 ? (
                         <Box>
-                            <Directories directories={data?.drive.directories} callAPI={callAPI}/>
+                            <Directories directories={data?.directories} callAPI={callAPI}/>
                         </Box>
                     ): null}
-                    {data?.drive.images.length !== 0 ? (
+                    {data?.images.length !== 0 ? (
                         <Box>
-                            <ImagesGallery images={data?.drive.images} ServerMediaURL={ServerMediaURL}/>
+                            <ImagesGallery images={data?.images} ServerMediaURL={ServerMediaURL}/>
                         </Box>
                     ): null}
-                    {data?.drive.videos.length !== 0 ? (
+                    {data?.videos.length !== 0 ? (
                         <Box>
-                            <VideosGallery videos={data?.drive.videos} ServerMediaURL={ServerMediaURL}/>
+                            <VideosGallery videos={data?.videos} ServerMediaURL={ServerMediaURL}/>
                         </Box>
                     ): null}
                 </Box>

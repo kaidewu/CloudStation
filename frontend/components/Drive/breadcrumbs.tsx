@@ -65,6 +65,7 @@ const Breadcrumbs = ({breadcrumbItems, callAPI}) => {
                 <Box flex={1} alignItems="right">
                     <Button onClick={onOpen}>Upload Files</Button>
                     <ModalUpload initialRef={initialRef} finalRef={finalRef} isOpen={isOpen} onClose={onClose} callAPI={callAPI} relativePath={path_drive}/>
+                    <Button onClick={onOpen}>Create Folder</Button>
                 </Box>
             </Container>
         </Box>
