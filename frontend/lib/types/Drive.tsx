@@ -4,13 +4,11 @@ import Video from './Video'
 import Other from './Other'
 
 type Drive = {
-    is_error: boolean;
-    drive: {
-      directories: Directory[];
-      images: Image[];
-      videos: Video[];
-      others: Other[];
-    }
+    is_error: boolean
+    directories: Directory[]
+    images: Image[]
+    videos: Video[]
+    others: Other[]
 }
 
 export default Drive

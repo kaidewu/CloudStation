@@ -20,4 +20,4 @@ def get_settings(
             "basepath": basepath,
         }
     except:
-        insert_errorlogs("get_settings")
+        insert_errorlogs(function="get_settings")

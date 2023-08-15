@@ -80,12 +80,12 @@ async def error_log(db: Session = Depends(get_db),
 
     except exc.SQLAlchemyError as sql_error:
         return insert_errorlogs(
-            "Exception",
+            "SQLError",
             "error_log", 
             f"SQL Error: {sql_error}"
             )
     except:
-        return insert_errorlogs("error_log")
+        return insert_errorlogs(function="error_log")
     
 @log_router.put("/error/log/remove")
 async def remove_log(
@@ -97,7 +97,7 @@ async def remove_log(
 
         if (error_codes_list is None) or (error_codes_list == []) or (error_codes_list == "\"\""):
             return insert_errorlogs(
-                "Exception",
+                "ValueError",
                 "remove_log",
                 "The Error Code can not be empty"
             )
@@ -115,9 +115,9 @@ async def remove_log(
 
     except exc.SQLAlchemyError as sql_error:
         return insert_errorlogs(
-            "Exception",
+            "SQLError",
             "remove_log", 
             f"SQL Error: {sql_error}"
             )
     except:
-        return insert_errorlogs("remove_log")
+        return insert_errorlogs(function="remove_log")

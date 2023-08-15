@@ -19,10 +19,11 @@ from sqlalchemy import exc
 
 # Application Modules 
 from api.api_v1.routers.drive.save_files import save_files
+from api.api_v1.routers.drive.create_drive import create_new_folder
 from api.api_v1.routers.drive.settings import get_settings
 from api.api_v1.routers.drive.get_drive import get_drive
 from errors.error import Error
-from api.api_v1.routers.drive.models import BasepathRequest
+from api.api_v1.routers.drive.models import BasepathRequest, CreateDriveRequest
 
 models.Base.metadata.create_all(bind=engine, checkfirst=True)
 
@@ -54,8 +55,6 @@ def get_platform():
         basepath_csva_name = "BASEPATH-WINDOWS"
     elif platform.system() in ("Linux", "Darwin"):
         basepath_csva_name = "BASEPATH-LINUX"
-    else:
-        raise SystemError("The Operating System doesn't support!!")
     return basepath_csva_name
 
 @drive_router.get("/drive/{drive_path:path}")
@@ -69,7 +68,7 @@ async def drive(
 
         if basepath is None:
             return insert_errorlogs(
-                "FileNotFoundError",
+                "SQLError",
                 "drive", 
                 f"The Path is not defined. Please go to the settings to fill the Path"
                 )
@@ -79,11 +78,11 @@ async def drive(
     except exc.SQLAlchemyError as sql_error:
         return insert_errorlogs("drive", f"SQL Error: {sql_error}")
     except:
-        return insert_errorlogs("drive")
+        return insert_errorlogs(function="drive")
 
-@drive_router.post("/drive/{drive_path:path}")
+@drive_router.post("/drive/upload/{drive_path:path}")
 async def upload_drive(
-    drive_path: str = "",
+    drive_path: str,
     files: Annotated[
         list[UploadFile], File(description="Upload Multiple files")
     ] = [],
@@ -94,28 +93,63 @@ async def upload_drive(
 
         if basepath is None:
             return insert_errorlogs(
-                "FileNotFoundError",
+                "SQLError",
                 "upload_drive", 
                 f"The Path is not defined. Please go to the settings to fill the Path"
                 )
         
         if files == []:
             return insert_errorlogs(
-                "Exception",
+                "ValueError",
                 "upload_drive",
                 "Files can't be empty"
                 )
             
-        return save_files(files, basepath[0], drive_path)
+        return save_files(basepath[0], files, drive_path if drive_path is not None else "")
 
     except exc.SQLAlchemyError as sql_error:
         return insert_errorlogs(
-            "Exception",
+            "SQLError",
             "upload_drive", 
             f"SQL Error: {sql_error}"
             )
     except:
-        return insert_errorlogs("upload_drive")
+        return insert_errorlogs(function="upload_drive")
+
+@drive_router.post("/drive/create/{drive_path:path}")
+async def create_drive(
+    drive_path: str,
+    newFolders: CreateDriveRequest,
+    db: Session = Depends(get_db)
+):
+    try:
+        basepath = db.query(models.SystemVariables.csva_default_values).filter(and_(models.SystemVariables.csva_deleted == 0, models.SystemVariables.csva_name == get_platform())).first()
+        folders = newFolders.newFolders
+
+        if basepath is None:
+            return insert_errorlogs(
+                "SQLError",
+                "create_drive", 
+                f"The Path is not defined. Please go to the settings to fill the Path"
+                )
+        
+        if folders == [] or folders is None or folders == [""]:
+            return insert_errorlogs(
+                "ValueError",
+                "create_drive",
+                "Folders can't be empty"
+            )
+
+        return create_new_folder(basepath[0], folders, drive_path if not drive_path else "")
+
+    except exc.SQLAlchemyError as sql_error:
+        return insert_errorlogs(
+            "SQLError",
+            "create_drive", 
+            f"SQL Error: {sql_error}"
+            )
+    except:
+        return insert_errorlogs(function="create_drive")
 
 @drive_router.get("/settings/drive")
 def settings_drive(
@@ -126,7 +160,7 @@ def settings_drive(
 
         if basepath is None:
             return insert_errorlogs(
-                "FileNotFoundError",
+                "SQLError",
                 "upload_drive", 
                 f"The Path is not defined. Please go to the settings to fill the Path"
                 )
@@ -135,12 +169,12 @@ def settings_drive(
 
     except exc.SQLAlchemyError as sql_error:
         return insert_errorlogs(
-            "Exception",
+            "SQLError",
             "settings_drive",
             f"SQL Error: {sql_error}"
             )
     except:
-        return insert_errorlogs("settings_drive")
+        return insert_errorlogs(function="settings_drive")
     
 @drive_router.put("/settings/drive")
 def update_settings_drive(
@@ -187,9 +221,9 @@ def update_settings_drive(
 
         else:
             return insert_errorlogs(
-                "Exception",
+                "SQLError",
                 "update_settings_drive", 
-                f"Something happend in the table CONF_SYSTEM_VARIABLES. Please contanct to the administrator"
+                f"Something happend in the table CONF_SYSTEM_VARIABLES"
                 )
 
         return {
@@ -199,9 +233,9 @@ def update_settings_drive(
 
     except exc.SQLAlchemyError as sql_error:
         return insert_errorlogs(
-            "Exception",
+            "SQLError",
             "update_settings_drive", 
             f"SQL Error: {sql_error}"
             )
     except:
-        return insert_errorlogs("update_settings_drive")
+        return insert_errorlogs(function="update_settings_drive")
